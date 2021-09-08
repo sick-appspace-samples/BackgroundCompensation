@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <manifest>
     <application name="BackgroundCompensation">
         <crown name="BackgroundCompensation">
@@ -10,6 +10,6 @@
         <meta key="priority">low</meta>
         <meta key="copy-protected">false</meta>
         <meta key="read-protected">false</meta>
-        <entry path="scripts" default="backgroundCompensation.lua"/>
+        <entry default="backgroundCompensation.lua" path="scripts"/>
     </application>
 </manifest>
