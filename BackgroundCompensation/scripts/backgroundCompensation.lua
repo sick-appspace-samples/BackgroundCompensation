@@ -2,12 +2,12 @@
 
 --------------------------------------------------------------------------------------
 -- Parameters
-local compensationMethod = 'rotate'   -- Rotate and translate the profiles according to the background. Note that the 
-                                      -- samples are not necessarily ordered with increasing X-coordinate after the 
+local compensationMethod = 'rotate'   -- Rotate and translate the profiles according to the background. Note that the
+                                      -- samples are not necessarily ordered with increasing X-coordinate after the
                                       -- rotation. This can cause problems for some funktions.
 
 --local compensationMethod = 'subtract' -- Subtract the background model from the profiles.Note that this means that
-                                        -- value-axis is not necessarily orthogonal to the X-axis any more. Thus, the 
+                                        -- value-axis is not necessarily orthogonal to the X-axis any more. Thus, the
                                         -- values is not the orthogonal distance to the background.
 
 local polyOrder = 1   -- Order of polynomial to fit. If compensationMethod == 'rotate' the order must be 1
@@ -21,14 +21,9 @@ v1:clear()
 local v2 = View.create('v2')
 v2:clear()
 
-local gDeco = View.GraphDecoration.create()
-gDeco:setXBounds(0, 90)
-gDeco:setYBounds(-5, 35)
---gdeco:
+local gDeco = View.GraphDecoration.create():setXBounds(0, 90):setYBounds(-5, 35)
 local gDecoOrig = View.GraphDecoration.create()
-gDecoOrig:setXBounds(0, 90)
-gDecoOrig:setTitle("No compensation")
-gDecoOrig:setYBounds(-5, 35)
+gDecoOrig:setXBounds(0, 90):setTitle("No compensation"):setYBounds(-5, 35)
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
