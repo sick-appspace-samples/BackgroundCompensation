@@ -2,12 +2,12 @@
 
 --------------------------------------------------------------------------------------
 -- Parameters
-local compensationMethod = 'rotate'   -- Rotate and translate the profiles according to the background. Note that the 
-                                      -- samples are not necessarily ordered with increasing X-coordinate after the 
+local compensationMethod = 'rotate'   -- Rotate and translate the profiles according to the background. Note that the
+                                      -- samples are not necessarily ordered with increasing X-coordinate after the
                                       -- rotation. This can cause problems for some funktions.
 
 --local compensationMethod = 'subtract' -- Subtract the background model from the profiles.Note that this means that
-                                        -- value-axis is not necessarily orthogonal to the X-axis any more. Thus, the 
+                                        -- value-axis is not necessarily orthogonal to the X-axis any more. Thus, the
                                         -- values is not the orthogonal distance to the background.
 
 local polyOrder = 1   -- Order of polynomial to fit. If compensationMethod == 'rotate' the order must be 1
@@ -21,20 +21,21 @@ v1:clear()
 local v2 = View.create('v2')
 v2:clear()
 
-local gDeco = View.GraphDecoration.create()
-gDeco:setXBounds(0, 90)
-gDeco:setYBounds(-5, 35)
---gdeco:
+local gDeco = View.GraphDecoration.create():setXBounds(0, 90):setYBounds(-5, 35)
 local gDecoOrig = View.GraphDecoration.create()
-gDecoOrig:setXBounds(0, 90)
-gDecoOrig:setTitle("No compensation")
-gDecoOrig:setYBounds(-5, 35)
+gDecoOrig:setXBounds(0, 90):setTitle("No compensation"):setYBounds(-5, 35)
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 -- Fit a polynomial to the profile
 local CF = Profile.CurveFitter.create()
---@fitModel(profile:Profile,polyOrder:float,startIndexes:table,stopIndexes:table,compensationMethod:string) : Profile
+
+---@param profile Profile
+---@param polyOrder float
+---@param startIndexes table
+---@param stopIndexes table
+---@param compensationMethod string
+---@return Profile backgroundModel
 local function fitModel(profile, polyOrder, startIndexes, stopIndexes, compensationMethod)
 
   -- Create profile with the samples on the background.
@@ -55,14 +56,18 @@ local function fitModel(profile, polyOrder, startIndexes, stopIndexes, compensat
   else
     print("Method must be 'rotate' or 'subtract'")
   end
-      
+
   return backgroundModel
 end
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
--- Compensate the profile with the model
---@compensateStatic(profile:Profile,backgroundModel::Profile,method:string) : Profile
+
+---Compensate the profile with the model
+---@param profile Profile
+---@param backgroundModel Profile
+---@param method string
+---@return Profile compensated
 local function compensateStatic(profile, backgroundModel, method)
   local compensated
 
@@ -88,25 +93,30 @@ end
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
--- Make an adaptive compensation
---@compensateAdaptive(profile:Profile,startIndexes:table,stopIndexes:table,polyOrder:float,method:string) : Profile
+
+---Make an adaptive compensation
+---@param profile Profile
+---@param startIndexes table
+---@param stopIndexes table
+---@param polyOrder float
+---@param method string
+---@return Profile profileCompensated
 local function compensateAdaptive(profile, startIndexes, stopIndexes, polyOrder, method)
   local backgroundModel = fitModel(profile, polyOrder, startIndexes, stopIndexes, method)
   local profileCompensated = compensateStatic(profile, backgroundModel, method)
-  
+
   return profileCompensated
 end
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
---@main()
 local function main()
 
   local hM = Object.load('resources/heightMap.json')
 
   -- Different compensations
   local staticOrAdaptiveV = {'static', 'adaptive'}
-  
+
   -----------------------------------------------------
   -- Select region on background to fit model to
   local startIndexes = {0}
@@ -121,7 +131,7 @@ local function main()
       local profile = Image.extractRowProfile(hM, 0)
       profile:convertCoordinateType("EXPLICIT_1D")
       local backgroundModel = fitModel(profile, polyOrder, startIndexes, stopIndexes, compensationMethod)
-        
+
       ----------------------------------------------------
       -- Compensate
       -- Loop over the rows in the heightmap
